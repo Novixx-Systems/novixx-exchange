@@ -1,0 +1,7 @@
+boska_trading.db
+boska_trading.db-journal
+.env
+.vscode/
+__pycache__/
+*.pyc
+coins.json

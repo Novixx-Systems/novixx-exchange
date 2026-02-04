@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>Novixx Exchange - Top Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/popper.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body class="homepage bg-dark text-white">
+{{NAVBAR}}
+    <main>
+        <section id="topup-section">
+            <h2>Top Up Your Account</h2>
+            <p>To top up your account, please send BOSKA or DGB to the following addresses:</p>
+            <div class="topup-addresses">
+                <!-- <h3>BOSKA Address:</h3>
+                <p id="boska-address">Loading...</p>
+                <h3>DGB Address:</h3>
+                <p id="dgb-address">Loading...</p>
+                 -->
+            </div>
+            <p>After sending the funds, please allow a few minutes for the transaction to be confirmed and your balance to be updated.</p>
+        </section>
+        <section id="pending-deposits-section">
+            <h2>Pending Deposits</h2>
+            <p>Your pending deposits will be displayed here once detected.</p>
+            <div id="pending-deposits">
+                <!-- Pending deposits will be populated here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Novixx Exchange. All rights reserved.</p>
+    </footer>
+    <script>
+        async function fetchTopupAddresses() {
+            const response = await fetch('/api/topup_addresses?access_type=user');
+            const data = await response.json();
+            // document.getElementById('boska-address').innerText = data.BOSKA;
+            // document.getElementById('dgb-address').innerText = data.DGB;
+            const topupDiv = document.querySelector('.topup-addresses');
+            for (const [coin, address] of Object.entries(data)) {
+                const h3 = document.createElement('h3');
+                h3.innerText = `${coin} Address:`;
+                const p = document.createElement('p');
+                p.innerText = address;
+                topupDiv.appendChild(h3);
+                topupDiv.appendChild(p);
+            }
+        }
+        async function fetchPendingDeposits() {
+            const response = await fetch('/api/pending_deposits');
+            const deposits = await response.json();
+            const pendingDepositsDiv = document.getElementById('pending-deposits');
+            pendingDepositsDiv.innerHTML = '';
+            deposits.pending_deposits.forEach(deposit => {
+                const p = document.createElement('p');
+                p.innerText = `Coin: ${deposit.coin}, Amount: ${deposit.amount}, Confirmations: ${deposit.confirmations}/${deposit.required_confirmations}, TXID: ${deposit.tx_url}`;
+                pendingDepositsDiv.appendChild(p);
+            });
+        }
+        setInterval(fetchPendingDeposits, 10000); // Refresh every 10 seconds
+        fetchPendingDeposits(); // Initial fetch
+        fetchTopupAddresses();
+    </script>
+</html>

@@ -1,0 +1,78 @@
+<html>
+<head>
+    <title>Novixx Exchange - Trade</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/popper.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body class="homepage bg-dark text-white">
+{{NAVBAR}}
+    <main>
+        <section id="trade-section">
+            <h2>Buy and Sell Cryptocurrencies</h2>
+            <form id="trade-form">
+                <label for="source-currency">Source Currency:</label>
+                <select id="source-currency" name="source-currency" required>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <label for="target-currency">Target Currency:</label>
+                <select id="target-currency" name="target-currency" required>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" step="0.0001" required>
+                <button type="submit" class="btn btn-linear btn-medium text-uppercase btn-rounded">Execute Trade</button>
+            </form>
+            <p id="message"></p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Novixx Exchange. All rights reserved.</p>
+    </footer>
+    <script>
+        document.getElementById('trade-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const sourceCurrency = document.getElementById('source-currency').value;
+            const targetCurrency = document.getElementById('target-currency').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            const response = await fetch('/api/trade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ source_currency: sourceCurrency, target_currency: targetCurrency, amount: amount })
+            });
+
+            const result = await response.json();
+            const messageElem = document.getElementById('message');
+            if (response.ok) {
+                messageElem.style.color = 'green';
+                messageElem.textContent = 'Trade executed successfully!';
+            } else {
+                messageElem.style.color = 'red';
+                messageElem.textContent = 'Error: ' + result.error;
+            }
+        });
+
+        async function fetchTradeOptions() {
+            const response = await fetch('/api/trade_options');
+            const options = await response.json();
+            const sourceSelect = document.getElementById('source-currency');
+            const targetSelect = document.getElementById('target-currency');
+            options.forEach(option => {
+                const opt1 = document.createElement('option');
+                opt1.value = option;
+                opt1.textContent = option;
+                sourceSelect.appendChild(opt1);
+                const opt2 = document.createElement('option');
+                opt2.value = option;
+                opt2.textContent = option;
+                targetSelect.appendChild(opt2);
+            });
+        }
+        fetchTradeOptions();
+    </script>
+</body>
+</html>

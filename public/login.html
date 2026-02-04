@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>Novixx Exchange</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/popper.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body class="homepage bg-dark text-white">
+    {{NAVBAR}}
+    <div class="container">
+        <h1>Novixx Exchange - Login</h1>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit" class="btn btn-linear btn-medium text-uppercase btn-rounded">Login</button>
+        </form>
+        <a href="/register">Don't have an account? Register here.</a>
+        <p id="message"></p>
+    </div>
+    <footer>
+        <p>&copy; 2026 Novixx Exchange. All rights reserved.</p>
+    </footer>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_email: username, password: password })
+            });
+
+            const result = await response.json();
+            const messageElem = document.getElementById('message');
+            if (response.ok) {
+                messageElem.style.color = 'green';
+                messageElem.textContent = 'Login successful! Redirecting...';
+                document.cookie = "session_token=" + result.session_token + "; path=/";
+                // Redirect to dashboard aka main page
+                window.location.href = '/dashboard';
+            } else {
+                messageElem.style.color = 'red';
+                messageElem.textContent = 'Error: ' + result.error;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+    "BOSKA": {
+        "name": "BoskaCoin",
+        "symbol": "BOSKA",
+        "algorithm": "Scrypt",
+        "website": "https://boskacoin.org",
+        "explorer_tx": "https://explorer.boskacoin.org/tx/",
+        "rpc_port": 19918,
+        "rpc_user": "user",
+        "rpc_password": "pass",
+        "default_price_usdt": 0.0005,
+        "min_trade_amount": 1,
+        "max_trade_amount": 1000
+    },
+    "DGB": {
+        "name": "DigiByte",
+        "symbol": "DGB",
+        "algorithm": "Scrypt",
+        "website": "https://digibyte.org",
+        "explorer_tx": "https://digiexplorer.info/tx/",
+        "rpc_port": 14022,
+        "rpc_user": "user",
+        "rpc_password": "pass",
+        "min_trade_amount": 1,
+        "max_trade_amount": 1000
+    }
+}

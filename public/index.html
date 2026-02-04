@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title>Novixx Exchange</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/popper.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body class="homepage bg-dark text-white">
+    {{NAVBAR}}
+    <main>
+        <section id="trade-history">
+            <h2>Recent Trades</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Price (Source Currency)</th>
+                        <th>Amount (Target Currency)</th>
+                    </tr>
+                </thead>
+                <tbody id="trade-data">
+                    <!-- Trade data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Novixx Exchange. All rights reserved.</p>
+        <p>Current BOSKA Price: <span id="boska-price">Loading...</span></p>
+        <p>Current DGB Price: <span id="dgb-price">Loading...</span></p>
+    </footer>
+    <script>
+        async function fetchTradeData() {
+            const response = await fetch('/api/trades');
+            const trades = await response.json();
+            const tradeDataBody = document.getElementById('trade-data');
+            tradeDataBody.innerHTML = '';
+            trades.forEach(trade => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(trade.time).toLocaleString()}</td>
+                    <td>${trade.price}</td>
+                    <td>${trade.amount}</td>
+                `;
+                tradeDataBody.appendChild(row);
+            });
+        }
+        setInterval(fetchTradeData, 5000); // Refresh every 5 seconds
+        fetchTradeData(); // Initial fetch
+        async function fetchBoskaPrice() {
+            const response = await fetch('/api/price');
+            const data = await response.json();
+            document.getElementById('boska-price').innerText = data.boska_price_usdt;
+            document.getElementById('dgb-price').innerText = data.dgb_price_usdt;
+        }
+        setInterval(fetchBoskaPrice, 5000); // Refresh every 5 seconds
+        fetchBoskaPrice(); // Initial fetch
+    </script>
+</body>
+</html>

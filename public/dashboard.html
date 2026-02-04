@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Novixx Exchange</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/popper.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body class="homepage bg-dark text-white">
+{{NAVBAR}}
+    <main>
+        <section id="account-overview">
+            <h2>Account Overview</h2>
+            <!-- <p>Balance (BOSKA): <span id="boska-balance">Loading...</span> BOSKA (<span id="boska-balance-usdt">Loading...</span> USDT)</p>
+            <p>Balance (DGB): <span id="dgb-balance">Loading...</span> DGB (<span id="dgb-balance-usdt">Loading...</span> USDT)</p> -->
+            <div id="balances">
+            <!-- Balances will be populated here --></div>
+        </section>
+        <section id="trade-history">
+            <h2>Recent Trades</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Price (Source Currency)</th>
+                        <th>Amount (Target Currency)</th>
+                    </tr>
+                </thead>
+                <tbody id="trade-data">
+                    <!-- Trade data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Novixx Exchange. All rights reserved.</p>
+        <p>Current BOSKA Price: <span id="boska-price">Loading...</span></p>
+        <p>Current DGB Price: <span id="dgb-price">Loading...</span></p>
+    </footer>
+    <script>
+        async function fetchTradeData() {
+            const response = await fetch('/api/trades');
+            const trades = await response.json();
+            const tradeDataBody = document.getElementById('trade-data');
+            tradeDataBody.innerHTML = '';
+            for (const trade of trades["trades"]) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${trade.timestamp}</td>
+                    <td>${trade.price}</td>
+                    <td>${trade.amount}</td>
+                `;
+                tradeDataBody.appendChild(row);
+            }
+        }
+        setInterval(fetchTradeData, 5000); // Refresh every 5 seconds
+        fetchTradeData(); // Initial fetch
+        async function fetchBoskaPrice() {
+            const response = await fetch('/api/price');
+            const data = await response.json();
+            document.getElementById('boska-price').innerText = data.boska_price_usdt;
+            document.getElementById('dgb-price').innerText = data.dgb_price_usdt;
+        }
+        setInterval(fetchBoskaPrice, 5000); // Refresh every 5 seconds
+        fetchBoskaPrice(); // Initial fetch
+        async function fetchAccountOverview() {
+            const response = await fetch('/api/account_overview');
+            const data = await response.json();
+            const balancesDiv = document.getElementById('balances');
+            balancesDiv.innerHTML = '';
+            for (const [currency, info] of Object.entries(data.balances)) {
+                const p = document.createElement('p');
+                p.innerText = `Balance (${currency}): ${info.amount} ${currency} (${info.usdt_value} USDT)`;
+                balancesDiv.appendChild(p);
+            }
+        }
+        setInterval(fetchAccountOverview, 10000);
+        fetchAccountOverview();
+    </script>
+</body>
+</html>
