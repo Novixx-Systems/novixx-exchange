@@ -10,7 +10,7 @@ Novixx Exchange is an open-source centralized cryptocurrency exchange platform b
 ## Configuration
 Use coins.json to configure supported cryptocurrencies and their RPC settings.
 
-```json
+```jsonc
 {
     "BOSKA": {
         "name": "BoskaCoin", // Name of the coin
