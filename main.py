@@ -307,16 +307,25 @@ async def withdraw_request_handler(request):
     if balance < total_deduction:
         return web.json_response({'error': 'Insufficient balance'}, status=400)
 
+    rpc_user = COINS[coin]['rpc_user']
+    rpc_password = COINS[coin]['rpc_password']
+    rpc_port = COINS[coin]['rpc_port']
+    rpc_address = "127.0.0.1"
+    rpc_connection = AuthServiceProxy(f"http://{rpc_user}:{rpc_password}@{rpc_address}:{rpc_port}")
+    try:
+        wallet_balance = rpc_connection.getbalance()
+    except JSONRPCException as e:
+        print(f"Error checking wallet balance for {coin}: {e}")
+        return web.json_response({'error': 'Withdrawal failed (not enough in host wallet)'}, status=500)
+    if wallet_balance < amount * 0.99:  # considering 1% fee
+        return web.json_response({'error': 'Withdrawal failed (not enough in host wallet)'}, status=500)
+
     # Process withdrawal
     new_balance = balance - total_deduction
     c.execute("UPDATE balances SET amount=? WHERE user_id=? AND coin=?", (new_balance, user_id, coin))
     conn.commit()
 
     # Send the coins using RPC (- 1% fee)
-    rpc_user = COINS[coin]['rpc_user']
-    rpc_password = COINS[coin]['rpc_password']
-    rpc_port = COINS[coin]['rpc_port']
-    rpc_address = "127.0.0.1"
     rpc_connection = AuthServiceProxy(f"http://{rpc_user}:{rpc_password}@{rpc_address}:{rpc_port}")
     try:
         txid = rpc_connection.sendtoaddress(to_address, amount * 0.99)  # 1% fee
