@@ -121,6 +121,8 @@ async def register_handler(request):
     # email validation
     if '@' not in user_email or '.' not in user_email or len(user_email) < 7:
         return web.json_response({'error': 'Invalid email address'}, status=400)
+    if '*' in user_email or '?' in user_email or '=' in user_email:
+        return web.json_response({'error': 'Invalid characters in email'}, status=400)
 
     # Check if username/email already exists
     c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
@@ -144,6 +146,9 @@ async def login_handler(request):
 
     if not user_email or not password:
         return web.json_response({'error': 'Missing fields'}, status=400)
+    
+    if '*' in user_email or '?' in user_email or '=' in user_email:
+        return web.json_response({'error': 'Invalid characters in email'}, status=400)
 
     user_id = base64.urlsafe_b64encode(user_email.encode('utf-8')).decode('utf-8')
 
