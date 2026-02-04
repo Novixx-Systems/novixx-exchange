@@ -253,7 +253,7 @@ async def topup_address_handler(request):
             rpc_user = COINS[coin]['rpc_user']
             rpc_password = COINS[coin]['rpc_password']
             rpc_port = COINS[coin]['rpc_port']
-            rpc_address = "172.18.19.97" if COINS[coin]['symbol'] == 'ABY' else "127.0.0.1"
+            rpc_address = "127.0.0.1"
             rpc_connection = AuthServiceProxy(f"http://{rpc_user}:{rpc_password}@{rpc_address}:{rpc_port}")
             address = rpc_connection.getnewaddress()
             c.execute("INSERT INTO addresses VALUES (?, ?, ?)", (user_id, COINS[coin]['symbol'], address))
