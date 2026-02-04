@@ -487,6 +487,7 @@ async def pending_deposits_handler(request):
             'required_confirmations': 6,
             'tx_url': COINS.get(row[1], {}).get('explorer_tx', '') + row[3]
         })
+    pending_deposits.reverse()
     return web.json_response({'pending_deposits': pending_deposits})
 web_app.router.add_get('/api/pending_deposits', pending_deposits_handler)
 
