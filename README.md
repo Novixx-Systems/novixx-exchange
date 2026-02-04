@@ -13,17 +13,17 @@ Use coins.json to configure supported cryptocurrencies and their RPC settings.
 ```json
 {
     "BOSKA": {
-        "name": "BoskaCoin",
-        "symbol": "BOSKA",
-        "algorithm": "Scrypt",
-        "website": "https://boskacoin.org",
-        "explorer_tx": "https://explorer.boskacoin.org/tx/",
-        "rpc_port": 19918,
-        "rpc_user": "user",
-        "rpc_password": "pass",
-        "default_price_usdt": 0.0005,
-        "min_trade_amount": 1,
-        "max_trade_amount": 1000
+        "name": "BoskaCoin", // Name of the coin
+        "symbol": "BOSKA", // Ticker symbol
+        "algorithm": "Scrypt", // Mining algorithm
+        "website": "https://boskacoin.org", // Official website
+        "explorer_tx": "https://explorer.boskacoin.org/tx/", // Transaction explorer URL
+        "rpc_port": 19918, // RPC port for the coin's daemon
+        "rpc_user": "user", // RPC username
+        "rpc_password": "pass", // RPC password
+        "default_price_usdt": 0.0005, // Default price in USDT (until trades set market price)
+        "min_trade_amount": 1, // Minimum trade amount
+        "max_trade_amount": 1000 // Maximum trade amount
     },
     "DGB": {
         "name": "DigiByte",
