@@ -38,12 +38,12 @@
             const trades = await response.json();
             const tradeDataBody = document.getElementById('trade-data');
             tradeDataBody.innerHTML = '';
-            trades.forEach(trade => {
+            trades["trades"].forEach(trade => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${new Date(trade.time).toLocaleString()}</td>
-                    <td>${trade.price}</td>
-                    <td>${trade.amount}</td>
+                    <td>${trade.timestamp}</td>
+                    <td>${trade.price} ${trade.from_currency}</td>
+                    <td>${trade.amount} ${trade.to_currency}</td>
                 `;
                 tradeDataBody.appendChild(row);
             });
