@@ -2,7 +2,7 @@
 # MIT License
 
 navbar_html = '''
-<nav class="navbar navbar-expand-lg container-fluid p-4 ">
+<nav class="navbar navbar-expand-xxl bg-dark navbar-dark py-3 justify-content-between justify-content-xxl-start">
 <div class="container-fluid">
       <div class="main-logo">
         <a href="/dashboard"><h1 class="text-white">Novixx Exchange</h1></a>
