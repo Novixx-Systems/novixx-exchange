@@ -9,6 +9,8 @@
 <body class="homepage bg-dark text-white">
     {{NAVBAR}}
     <main>
+        <h1>Welcome to Novixx Exchange</h1>
+        <p>A secure and reliable cryptocurrency exchange.</p>
         <section id="trade-history">
             <h2>Recent Trades</h2>
             <table>
@@ -46,7 +48,7 @@
                 tradeDataBody.appendChild(row);
             });
         }
-        setInterval(fetchTradeData, 5000); // Refresh every 5 seconds
+        setInterval(fetchTradeData, 1000); // Refresh every second
         fetchTradeData(); // Initial fetch
         async function fetchBoskaPrice() {
             const response = await fetch('/api/price');
