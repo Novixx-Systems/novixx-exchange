@@ -422,11 +422,11 @@ web_app.router.add_post('/api/trade', trade_request_handler)
 
 # List trades
 async def list_trades_handler(request):
-    session_token = request.cookies.get('session_token')
-    if not session_token or session_token not in sessions:
-        return web.json_response({'error': 'Unauthorized'}, status=401)
+    # session_token = request.cookies.get('session_token')
+    # if not session_token or session_token not in sessions:
+    #     return web.json_response({'error': 'Unauthorized'}, status=401)
 
-    user_id = sessions[session_token]
+    # user_id = sessions[session_token]
     c.execute("SELECT * FROM trades ORDER BY timestamp DESC LIMIT 100")
     rows = c.fetchall()
     trades = []
