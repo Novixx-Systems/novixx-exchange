@@ -27,9 +27,10 @@ def calculate_coin_price(coin_symbol, conn2=None, c=None):
             total_price = 0
             for trade in trades:
                 if trade[3] == coin_symbol:  # from_currency
-                    total_price += (trade[1] / trade[2]) * trade[7]  # boska/other * amount
+                    # total_price += (trade[1] / trade[2]) * trade[7]  # boska/other * amount
+                    total_price += (trade[1] / trade[2]) * trade[7] / 2  # boska/other * amount
                 else:  # to_currency
-                    total_price += (trade[2] / trade[1]) * trade[8]  # other/boska * amount
+                    total_price += (trade[2] / trade[1]) * trade[8] / 2  # other/boska * amount
             average_price = total_price / len(trades)
             return average_price
         return UNKNOWN_COIN_PRICES.get(coin_symbol, 0.00000001)  # Fallback price

@@ -416,7 +416,7 @@ async def trade_request_handler(request):
 
     # Log trade
     timestamp = str(int(time.time()))
-    log_trade(timestamp, price, amount, from_currency, to_currency, None, None)
+    log_trade(timestamp, received_amount, amount, from_currency, to_currency, None, None)
 
     return web.json_response({'ok': 1, 'new_from_balance': new_from_balance, 'new_to_balance': new_to_balance})
 web_app.router.add_post('/api/trade', trade_request_handler)
@@ -425,27 +425,22 @@ async def price_estimate_handler(request):
     from_currency = request.query.get('source_currency')
     to_currency = request.query.get('target_currency')
     amount = float(request.query.get('amount', 0))
-
     if from_currency == to_currency:
         return web.json_response({'error': 'From and to currencies must be different'}, status=400)
-
     if from_currency not in [COINS[c]['symbol'] for c in COINS] or to_currency not in [COINS[c]['symbol'] for c in COINS]:
         return web.json_response({'error': 'Unsupported currency'}, status=400)
-
     if amount <= 0:
         return web.json_response({'error': 'Invalid amount'}, status=400)
-
-    # Calculate price
+    
     if from_currency == 'DGB':
         price = dgb_price / calculate_coin_price(to_currency)
     elif to_currency == 'DGB':
         price = calculate_coin_price(from_currency) / dgb_price
     else:
         price = calculate_coin_price(from_currency) / calculate_coin_price(to_currency)
-
     estimated_amount = amount * price
 
-    return web.json_response({'estimated_amount': estimated_amount})
+    return web.json_response({'estimated_amount': estimated_amount, 'estimated_currency': to_currency})
 web_app.router.add_get('/api/price_estimate', price_estimate_handler)
 
 # List trades
@@ -461,8 +456,8 @@ async def list_trades_handler(request):
     for row in rows:
         trades.append({
             'timestamp': row[0],
-            'price': row[1],
-            'amount': row[2],
+            'price': row[2],
+            'amount': row[1],
             'from_currency': row[3],
             'to_currency': row[4],
             'from_address': row[5],
