@@ -421,6 +421,33 @@ async def trade_request_handler(request):
     return web.json_response({'ok': 1, 'new_from_balance': new_from_balance, 'new_to_balance': new_to_balance})
 web_app.router.add_post('/api/trade', trade_request_handler)
 
+async def price_estimate_handler(request):
+    from_currency = request.query.get('source_currency')
+    to_currency = request.query.get('target_currency')
+    amount = float(request.query.get('amount', 0))
+
+    if from_currency == to_currency:
+        return web.json_response({'error': 'From and to currencies must be different'}, status=400)
+
+    if from_currency not in [COINS[c]['symbol'] for c in COINS] or to_currency not in [COINS[c]['symbol'] for c in COINS]:
+        return web.json_response({'error': 'Unsupported currency'}, status=400)
+
+    if amount <= 0:
+        return web.json_response({'error': 'Invalid amount'}, status=400)
+
+    # Calculate price
+    if from_currency == 'DGB':
+        price = dgb_price / calculate_coin_price(to_currency)
+    elif to_currency == 'DGB':
+        price = calculate_coin_price(from_currency) / dgb_price
+    else:
+        price = calculate_coin_price(from_currency) / calculate_coin_price(to_currency)
+
+    estimated_amount = amount * price
+
+    return web.json_response({'estimated_amount': estimated_amount})
+web_app.router.add_get('/api/price_estimate', price_estimate_handler)
+
 # List trades
 async def list_trades_handler(request):
     # session_token = request.cookies.get('session_token')
@@ -558,6 +585,8 @@ def check_deposits():
                                   (amount, user_id, COINS[coin]['symbol']))
                         # c.execute("UPDATE trades SET processed=1 WHERE from_address=? AND to_address=? AND timestamp=?",
                         #           (address, None, timestamp))
+                        # update pending_deposits to processed
+                        c.execute("UPDATE pending_deposits SET confirmations=6 WHERE txid=?", (txid,))
                         conn.commit()
             except Exception as e:
                 print(f"Error checking deposits for {COINS[coin]['symbol']}: {e}")

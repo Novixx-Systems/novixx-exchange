@@ -22,6 +22,7 @@
                 </select>
                 <label for="amount">Amount:</label>
                 <input type="number" id="amount" name="amount" step="0.0001" required>
+                <p>This will give you an estimated amount of <span id="estimated-amount">0</span> <span id="estimated-currency"></span></p>
                 <button type="submit" class="btn btn-linear btn-medium text-uppercase btn-rounded">Execute Trade</button>
             </form>
             <p id="message"></p>
@@ -73,6 +74,25 @@
             });
         }
         fetchTradeOptions();
+
+        function fetchPriceEstimate() {
+            const sourceCurrency = document.getElementById('source-currency').value;
+            const targetCurrency = document.getElementById('target-currency').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (sourceCurrency && targetCurrency && amount > 0) {
+                fetch(`/api/price_estimate?source_currency=${sourceCurrency}&target_currency=${targetCurrency}&amount=${amount}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('estimated-amount').textContent = data.estimated_amount;
+                        document.getElementById('estimated-currency').textContent = targetCurrency;
+                    });
+            } else {
+                document.getElementById('estimated-amount').textContent = '0';
+                document.getElementById('estimated-currency').textContent = '';
+            }
+        }
+
+        document.getElementById('amount').addEventListener('input', fetchPriceEstimate);
     </script>
 </body>
 </html>
