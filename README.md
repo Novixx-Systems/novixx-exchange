@@ -1,6 +1,9 @@
 # Novixx Exchange - Open Source Crypto Trading Platform (CEX)
 Novixx Exchange is an open-source centralized cryptocurrency exchange platform built with Python and SQLite.
 
+## Production
+I wouldn't recommend using this in production due to the current bugs like inflation.
+
 ## Features
 - User registration and authentication
 - Cryptocurrency trading (buy/sell)
@@ -52,3 +55,4 @@ This was a quick prototype to make a working exchange platform. We plan to refac
 [HCC](https://hashcash-pow-faucet.dynv6.net/) was an inspiration for this project
 
 [KlingEx](https://klingex.io/) was also an inspiration for this project
+
