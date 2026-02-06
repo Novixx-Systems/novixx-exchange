@@ -412,11 +412,12 @@ async def trade_request_handler(request):
     else:
         c.execute("INSERT INTO balances VALUES (?, ?, ?)", (user_id, to_currency, received_amount))
 
+    conn.commit()
+
     # Log trade
     timestamp = str(int(time.time()))
     log_trade(timestamp, price, amount, from_currency, to_currency, None, None)
 
-    conn.commit()
     return web.json_response({'ok': 1, 'new_from_balance': new_from_balance, 'new_to_balance': new_to_balance})
 web_app.router.add_post('/api/trade', trade_request_handler)
 
