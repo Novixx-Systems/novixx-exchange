@@ -57,7 +57,6 @@
         async function fetchBoskaPrice() {
             const response = await fetch('/api/price');
             const data = await response.json();
-            document.getElementById('boska-price').innerText = data.boska_price_usdt;
             document.getElementById('dgb-price').innerText = data.dgb_price_usdt;
         }
         setInterval(fetchBoskaPrice, 5000); // Refresh every 5 seconds
